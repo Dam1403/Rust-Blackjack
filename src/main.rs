@@ -3,8 +3,8 @@ mod black_jack_tools;
 mod main_menu;
 mod test_menu;
 mod game_menu;
-
-
+mod round_menu;
+mod player_strategies;
 
 
 use std;
@@ -16,8 +16,8 @@ fn main() {
     println!("{}",title::title);
 
 
-    let mut curr_menu = "main_menu".to_string();
-    let mut run_command_funct: RunCommand = main_menu::run_command;
+    let mut curr_menu = "game_menu".to_string();
+    let mut run_command_funct: RunCommand = game_menu::run_command;
     print!("{} >",curr_menu);
     loop{
         let mut str_buff = String::new();

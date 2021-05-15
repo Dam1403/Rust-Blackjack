@@ -1,12 +1,14 @@
 
 use std::fmt;
-
+use rand::thread_rng;
+use rand::seq::SliceRandom;
+use crate::player_strategies::{PlayerStrategy,get_player_strat};
 
 //0  - 12 Heart
 //13 - 25 Diamond
 //26 - 38 Club
 //39 - 51 Spade
-
+#[derive(Copy, Clone)]
 pub enum Suit{
     Heart,
     Diamond,
@@ -14,6 +16,7 @@ pub enum Suit{
     Spade
 }
 
+#[derive(Copy, Clone)]
 pub enum Face{
     King,
     Queen,
@@ -22,12 +25,56 @@ pub enum Face{
     NoFace
 }
 
+#[derive(Copy, Clone)]
 pub struct Card {
-    suit: Suit,
-    face: Face,
-    value: u8
+    pub suit: Suit,
+    pub face: Face,
+    pub value: u8
+}
+pub enum PlayerDifficulty{
+    Player,
+    Dealer,
+    Normal,
+    Perfect,
+    Micky,
+    Elliot,
+    Cultist
 }
 
+pub struct Player {
+    pub name: String,
+    pub difficulty: PlayerDifficulty,
+    pub hands: Vec<Vec<Card>>,
+    pub money: i64,
+    pub bet: i64
+}
+
+impl Player{
+    pub fn new(name:String, difficulty:PlayerDifficulty) -> Self{
+
+        Self {
+            name: match difficulty {
+                PlayerDifficulty::Dealer => format!("{}-{}","Dealer",name),
+                _ => name
+            },
+            difficulty: difficulty,
+            hands: vec![Vec::new()],
+            money: 500,
+            bet: 20,
+
+        }
+    }
+
+    pub fn play_round(&mut self,deck:&mut Vec<u8>){
+        let strat_funct = get_player_strat(&self.difficulty);
+        return strat_funct(self,deck);
+
+    }
+}
+
+
+
+const DECK_COUNT: u8 = 1;
 impl fmt::Display for Face{
     fn fmt(&self,f: &mut fmt::Formatter<'_> ) -> fmt::Result {
         let str_val = match self {
@@ -66,28 +113,38 @@ impl fmt::Display for Card{
     }
 }
 
+pub fn get_hand_str(hand: &Vec<Card>) -> String{
+    let mut hand_string = String::new();
 
+    for card in hand{
 
-pub fn get_card_str(card: Card) -> String{
+        hand_string.push_str(format!("{} ",get_card_str(&card).as_str()).as_str());
+    }
+
+    hand_string
+
+}
+
+pub fn get_card_str(card: &Card) -> String{
     let val_str = match card.face{
         Face::NoFace => card.value.to_string(),
         _=> card.face.to_string().chars().next().unwrap().to_string()
     };
     let suit_str = card.suit.to_string().chars().next().unwrap();
 
-    return format!("{}{}",suit_str,val_str);
+    return format!("{}{}",val_str,suit_str);
 
 }
-pub fn get_suit(card_val: u8) -> Option<Suit>{
+pub fn get_suit(card_val: u8) -> Suit{
     let suit_mux = card_val as u8 / 13;
     match suit_mux {
-        0 => Some(Suit::Club),
-        1 => Some(Suit::Diamond),
-        2 => Some(Suit::Heart),
-        3 => Some(Suit::Spade),
+        0 => Suit::Club,
+        1 => Suit::Diamond,
+        2 => Suit::Heart,
+        3 => Suit::Spade,
         _ =>{
-            println!("get_suit recieved {}",suit_mux);
-            None
+            panic!("get_card get_suit Failure on value {}",card_val);
+
         }
     }
 }
@@ -102,18 +159,10 @@ pub fn get_face(card_val:u8) -> Face {
         _ => Face::NoFace
     }
 }
-pub fn get_card(card_val:u8 ) -> Option<Card>{
+pub fn get_card(card_val:u8 ) -> Card{
 
 
-    let suit = match get_suit(card_val){
-       Some(the_suit) => the_suit,
-        None => {
-            println!("get_card get_suit Failure");
-            return None
-        }
-    };
-
-
+    let suit = get_suit(card_val);
     let face = get_face(card_val);
     let count_val = match face {
         Face::NoFace => (card_val % 13) + 1,
@@ -121,23 +170,60 @@ pub fn get_card(card_val:u8 ) -> Option<Card>{
         _ => 10
     };
 
-    Some(Card{
+    Card{
         suit:suit,
         face:face,
         value:count_val
-    })
+    }
 
 }
 
-pub fn build_deck(decks: u8) -> Vec<u8>{
+pub fn draw_card(deck: &mut Vec<u8>) -> Card{
+
+    let card = match deck.pop(){
+        Some(card_num) => get_card(card_num),
+        None => {
+            println!("Deck Empty");
+            deck.extend(build_deck(DECK_COUNT,true)); // Load this from config file.
+            get_card(deck.pop().unwrap())
+        }
+    };
+    card
+}
+
+
+pub fn calc_hand(hand: &Vec<Card> ) -> u8{
+    let mut count: u8 = 0;
+    let mut ace_count = 0;
+    for card in hand{
+        count += match card.face{
+            Face::NoFace => card.value as u8,
+            Face::Ace => {
+                ace_count += 1;
+                11 as u8
+            },
+            _ => 10 as u8
+        }
+    }
+    while count > 21 && ace_count > 0{
+        ace_count -= 1;
+        count -= 10
+    }
+
+    count
+}
+pub fn build_deck(decks: u8,shuffled: bool ) -> Vec<u8>{
 
     let mut deck: Vec<u8> = Vec::new();
 
     for deck_ind in 0..=decks{
         for i in 0..52{
             deck.push(i);
-            println!("{}",get_card(i).unwrap())
+            println!("{}",get_card(i))
         }
     };
+    deck.shuffle(&mut thread_rng());
     deck
+
 }
+

@@ -67,7 +67,7 @@ impl Player{
 
     pub fn play_round(&mut self,deck:&mut Vec<u8>){
         let strat_funct = get_player_strat(&self.difficulty);
-        return strat_funct(self,deck);
+        return strat_funct(self,deck,true);
 
     }
 }
@@ -161,7 +161,9 @@ pub fn get_face(card_val:u8) -> Face {
 }
 pub fn get_card(card_val:u8 ) -> Card{
 
-
+    //0 is ACE
+    // 1-9 is 2-10
+    // Jack is 10 queen is 11 King is  12
     let suit = get_suit(card_val);
     let face = get_face(card_val);
     let count_val = match face {
@@ -180,13 +182,14 @@ pub fn get_card(card_val:u8 ) -> Card{
 
 pub fn draw_card(deck: &mut Vec<u8>) -> Card{
 
-    let card = match deck.pop(){
-        Some(card_num) => get_card(card_num),
-        None => {
+    let card = match deck.len(){
+        0 => {
             println!("Deck Empty");
-            deck.extend(build_deck(DECK_COUNT,true)); // Load this from config file.
-            get_card(deck.pop().unwrap())
-        }
+            deck.extend(build_deck(DECK_COUNT, true)); // Load this from config file.
+            get_card(deck.remove(0))
+        },
+        _ => get_card(deck.remove(0))
+
     };
     card
 }
@@ -212,17 +215,21 @@ pub fn calc_hand(hand: &Vec<Card> ) -> u8{
 
     count
 }
+
+
 pub fn build_deck(decks: u8,shuffled: bool ) -> Vec<u8>{
 
     let mut deck: Vec<u8> = Vec::new();
 
-    for deck_ind in 0..=decks{
+    for deck_ind in 0..decks{
         for i in 0..52{
             deck.push(i);
-            println!("{}",get_card(i))
         }
     };
-    deck.shuffle(&mut thread_rng());
+    if shuffled{
+        deck.shuffle(&mut thread_rng());
+    }
+
     deck
 
 }

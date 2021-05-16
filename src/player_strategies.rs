@@ -5,7 +5,7 @@ use std::thread::{sleep};
 use std::time::Duration;
 
 
-pub type PlayerStrategy = fn(player: &mut Player, deck: &mut Vec<u8>);
+pub type PlayerStrategy = fn(player: &mut Player, deck: &mut Vec<u8>, live: bool);
 
 
 
@@ -28,7 +28,7 @@ pub fn get_player_strat(difficulty: &PlayerDifficulty) -> PlayerStrategy {
 
 
 
-pub fn player_strat(player: &mut Player, deck: &mut Vec<u8>){
+pub fn player_strat(player: &mut Player, deck: &mut Vec<u8>,live: bool){
     // If this ever comes out of nightly use this https://github.com/rust-lang/rust/issues/58533
 
     let mut first_run = true;
@@ -75,19 +75,20 @@ pub fn player_strat(player: &mut Player, deck: &mut Vec<u8>){
     }
 }
 
-pub fn dealer_strat(player: &mut Player,  deck: &mut Vec<u8>){
+pub fn dealer_strat(player: &mut Player,  deck: &mut Vec<u8>,live: bool){
 
     let mut hand = &mut player.hands[0];
     let mut hand_calc = calc_hand(hand);
+
     println!("{} - {}",hand_calc,get_hand_str(hand));
     while hand_calc < 17 as u8 {
         hand.push(draw_card(deck));
         hand_calc = calc_hand(hand);
-        sleep(Duration::new(1,0));
+        if live {sleep(Duration::new(1,0));}
         println!("{} - {}",hand_calc,get_hand_str(hand));
 
     }
-    sleep(Duration::new(1,0));
+    if live{sleep(Duration::new(1,0))}
 
 }
 

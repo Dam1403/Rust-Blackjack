@@ -110,7 +110,7 @@ pub fn play_round(deck:&mut Vec<u8>, players: &mut Vec<Player>){
             let mut winnings = -player.bet;
             let mut win_str = "Lose";
             let player_count = calc_hand(&hand);
-            if player_count > dealer_count{
+            if player_count > dealer_count || dealer_count > 21{
                 if player_count == 21 && hand.len() == 2{
                     // FORCE BET TO BE MULTIPLE OF 10
                     winnings = player.bet + (player.bet / 2);

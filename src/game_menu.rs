@@ -58,37 +58,30 @@ pub fn play_game() {
 
 }
 
-pub fn deal(deck:&mut Vec<u8>, players: &mut Vec<Player>){
-
-
-    for deal_count in 0..2{
-        for player in players.iter_mut(){
+pub fn deal(deck:&mut Vec<u8>, players: &mut Vec<Player>) {
+    for deal_count in 0..2 {
+        for player in players.iter_mut() {
             //When you allow bets to be set before each round allow hand count also.
             //This will do for now.
 
-            for hand in &mut player.hands{
+            for hand in &mut player.hands {
                 hand.push(draw_card(deck))
             }
         }
-
     }
     let mut players_iter = players.iter_mut().peekable();
-    while let Some(player) = players_iter.next(){
+    while let Some(player) = players_iter.next() {
         let is_dealer = players_iter.peek().is_none();
-        for hand in &mut player.hands{
+        for hand in &mut player.hands {
             let mut hand_str = String::new();
-            if is_dealer{
-                 hand_str = get_card_str(&hand[1]);
-            }
-            else{
+            if is_dealer {
+                hand_str = get_card_str(&hand[1]);
+            } else {
                 hand_str = get_hand_str(&hand);
             }
-            println!("{} {}",player.name, hand_str);
+            println!("{} {}", player.name, hand_str);
         }
     }
-    let dealer = &players[players.len() - 1];
-
-
 }
 
 pub fn play_round(deck:&mut Vec<u8>, players: &mut Vec<Player>){

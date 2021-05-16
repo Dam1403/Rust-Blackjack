@@ -5,6 +5,7 @@ mod test_menu;
 mod game_menu;
 mod round_menu;
 mod player_strategies;
+mod tests;
 
 
 use std;

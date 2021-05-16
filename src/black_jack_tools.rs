@@ -212,6 +212,8 @@ pub fn calc_hand(hand: &Vec<Card> ) -> u8{
 
     count
 }
+
+
 pub fn build_deck(decks: u8,shuffled: bool ) -> Vec<u8>{
 
     let mut deck: Vec<u8> = Vec::new();
@@ -222,7 +224,10 @@ pub fn build_deck(decks: u8,shuffled: bool ) -> Vec<u8>{
             println!("{}",get_card(i))
         }
     };
-    deck.shuffle(&mut thread_rng());
+    if shuffled{
+        deck.shuffle(&mut thread_rng());
+    }
+
     deck
 
 }

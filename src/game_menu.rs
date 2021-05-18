@@ -1,10 +1,5 @@
-use std::io::Write;
-use crate::black_jack_tools;
-use crate::black_jack_tools::{build_deck, Card, get_card, draw_card, calc_hand, Player, PlayerDifficulty, get_hand_str, get_card_str};
+use crate::black_jack_tools::{build_deck, draw_card, calc_hand, Player, PlayerDifficulty, get_hand_str, get_card_str};
 
-use rand::thread_rng;
-use rand::seq::SliceRandom;
-use crate::player_strategies::get_player_strat;
 use std::thread::{sleep};
 use std::time::Duration;
 
@@ -16,7 +11,7 @@ pub fn get_name() -> &'static str{
 }
 
 pub fn run_command(command_string: &str) -> Result<(), String>{
-    let mut args: Vec<&str> = command_string.split_whitespace().collect();
+    let args: Vec<&str> = command_string.split_whitespace().collect();
     println!("COMMAND: {}",command_string);
 
     match args[0]{
@@ -42,10 +37,10 @@ pub fn help() -> String{
 pub fn play_game() {
     let mut deck = build_deck(2,true);
 
-    let mut player = Player::new(String::from("Doug"), PlayerDifficulty::Player);
+    let player = Player::new(String::from("Doug"), PlayerDifficulty::Player);
 
     // get random dealer name from http api
-    let mut dealer = Player::new(String::from("Jimmy"), PlayerDifficulty::Dealer);
+    let dealer = Player::new(String::from("Jimmy"), PlayerDifficulty::Dealer);
 
 
     let mut players = Vec::new();
@@ -59,7 +54,7 @@ pub fn play_game() {
 }
 
 pub fn deal(deck:&mut Vec<u8>, players: &mut Vec<Player>) {
-    for deal_count in 0..2 {
+    for _deal_count in 0..2 {
         for player in players.iter_mut() {
             //When you allow bets to be set before each round allow hand count also.
             //This will do for now.
@@ -73,12 +68,11 @@ pub fn deal(deck:&mut Vec<u8>, players: &mut Vec<Player>) {
     while let Some(player) = players_iter.next() {
         let is_dealer = players_iter.peek().is_none();
         for hand in &mut player.hands {
-            let mut hand_str = String::new();
-            if is_dealer {
-                hand_str = get_card_str(&hand[1]);
-            } else {
-                hand_str = get_hand_str(&hand);
-            }
+            let hand_str = match is_dealer{
+                true => get_card_str(&hand[1]),
+                false => get_hand_str(&hand)
+            };
+
             println!("{} {}", player.name, hand_str);
         }
     }
@@ -88,7 +82,7 @@ pub fn play_round(deck:&mut Vec<u8>, players: &mut Vec<Player>){
 
     deal(deck,players);
     println!("\n====================================================\n");
-    for mut player in players.iter_mut(){
+    for player in players.iter_mut(){
         println!("{:12} ${:8}: ", player.name, player.money);
         player.play_round(deck);
 
@@ -131,17 +125,6 @@ pub fn play_round(deck:&mut Vec<u8>, players: &mut Vec<Player>){
 
 
 
-}
-
-
-
-pub fn test_funct() -> (){
-    println!("Build_deck");
-    black_jack_tools::build_deck(1,true);
-}
-
-pub fn test_funct_args(args: &Vec<&str>) -> () {
-    println!("test_funct: {} {} {} ", args[0],args[1],args[2])
 }
 
 

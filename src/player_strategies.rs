@@ -28,11 +28,11 @@ pub fn get_player_strat(difficulty: &PlayerDifficulty) -> PlayerStrategy {
 
 
 
-pub fn player_strat(player: &mut Player, deck: &mut Vec<u8>,live: bool){
+pub fn player_strat(player: &mut Player, deck: &mut Vec<u8>,_live: bool){
     // If this ever comes out of nightly use this https://github.com/rust-lang/rust/issues/58533
 
     let mut first_run = true;
-    let mut splitting_index = -1;
+
 
     let mut curr_index = 0;
     while  curr_index < player.hands.len(){
@@ -45,9 +45,9 @@ pub fn player_strat(player: &mut Player, deck: &mut Vec<u8>,live: bool){
                 println!("Bust");
                 break;
             }
-            std::io::stdout().flush();
+            std::io::stdout().flush().unwrap();
             let mut str_buff = String::new();
-            let comm_len = std::io::stdin().read_line(&mut str_buff);
+            let _comm_len = std::io::stdin().read_line(&mut str_buff);
             let command = str_buff.trim();
             if command == "h" {
                 hand.push(draw_card(deck))
@@ -77,7 +77,7 @@ pub fn player_strat(player: &mut Player, deck: &mut Vec<u8>,live: bool){
 
 pub fn dealer_strat(player: &mut Player,  deck: &mut Vec<u8>,live: bool){
 
-    let mut hand = &mut player.hands[0];
+    let hand = &mut player.hands[0];
     let mut hand_calc = calc_hand(hand);
 
     println!("{} - {}",hand_calc,get_hand_str(hand));

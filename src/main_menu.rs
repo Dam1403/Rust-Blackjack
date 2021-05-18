@@ -1,4 +1,4 @@
-use std::io::Write;
+
 
 // MAKE AN ENUM TO SWITCH BETWEEN THIS
 // ADD THIS TO IT's OWN CRATE.
@@ -8,7 +8,7 @@ pub fn get_name() -> &'static str{
 }
 
 pub fn run_command(command_string: &str) -> Result<(), String>{
-    let mut args: Vec<&str> = command_string.split_whitespace().collect();
+    let args: Vec<&str> = command_string.split_whitespace().collect();
     println!("COMMAND: {}",command_string);
     match args[0]{
         "test_funct" => Ok(test_funct()),

@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod dealer{
-    use crate::black_jack_tools::{build_deck, get_card, draw_card, calc_hand, };
-    use crate::black_jack_tools::{Suit, Face,Player,PlayerDifficulty};
+    use crate::black_jack_tools::{get_card, calc_hand, };
+    use crate::black_jack_tools::{Player,PlayerDifficulty};
     use crate::player_strategies::{dealer_strat};
-    use std::collections::HashMap;
+
 
 
     #[test]

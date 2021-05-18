@@ -1,5 +1,5 @@
 [package]
-name = "Rust-Blackjack"
+name = "rust_blackjack"
 version = "0.1.0"
 authors = ["Douglas May <Dam1403@rit.edu>"]
 edition = "2018"

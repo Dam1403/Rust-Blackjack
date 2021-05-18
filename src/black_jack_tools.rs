@@ -2,7 +2,7 @@
 use std::fmt;
 use rand::thread_rng;
 use rand::seq::SliceRandom;
-use crate::player_strategies::{PlayerStrategy,get_player_strat};
+use crate::player_strategies::{get_player_strat};
 
 //0  - 12 Heart
 //13 - 25 Diamond
@@ -221,7 +221,7 @@ pub fn build_deck(decks: u8,shuffled: bool ) -> Vec<u8>{
 
     let mut deck: Vec<u8> = Vec::new();
 
-    for deck_ind in 0..decks{
+    for _deck_ind in 0..decks{
         for i in 0..52{
             deck.push(i);
         }

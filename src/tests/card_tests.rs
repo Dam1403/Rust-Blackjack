@@ -1,9 +1,10 @@
 
 #[cfg(test)]
 mod deck {
-    use crate::black_jack_tools::{build_deck, get_card, draw_card,calc_hand};
+    use crate::black_jack_tools::{get_card,draw_card,build_deck};
     use crate::black_jack_tools::{Suit,Face};
     use std::collections::HashMap;
+
     #[test]
     fn build_deck_count(){
         for i in 1..=16{
@@ -78,7 +79,7 @@ mod deck {
         assert_eq!(king, 4);
         assert_eq!(jack, 4);
 
-        for i in (2..=10){
+        for i in 2..=10{
             println!("Checking: {}s",i);
             match hash_map.get(&(i as u8)){
                 Some(count) => assert_eq!(*count, 4),
@@ -90,7 +91,7 @@ mod deck {
     #[test]
     fn draw_from_deck(){
         let mut deck = build_deck(1,false);
-        for i in 0..125{
+        for _ in 0..125{
             draw_card(&mut deck);
         }
     }
@@ -100,9 +101,8 @@ mod deck {
 
 #[cfg(test)]
 mod hand {
-    use crate::black_jack_tools::{build_deck, get_card, draw_card, calc_hand};
-    use crate::black_jack_tools::{Suit, Face};
-    use std::collections::HashMap;
+    use crate::black_jack_tools::{get_card, calc_hand};
+
 
     #[test]
     fn calc_hand_test(){

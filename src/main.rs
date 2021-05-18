@@ -1,9 +1,9 @@
+#![allow(dead_code)]
 mod title;
 mod black_jack_tools;
 mod main_menu;
 mod test_menu;
 mod game_menu;
-mod round_menu;
 mod player_strategies;
 mod tests;
 
@@ -14,7 +14,7 @@ use std::io::Write;
 
 fn main() {
     type RunCommand = fn(command_string: &str) -> Result<(), String>;
-    println!("{}",title::title);
+    println!("{}",title::TITLE);
 
 
     let mut curr_menu = "game_menu".to_string();
@@ -23,8 +23,8 @@ fn main() {
     loop{
         let mut str_buff = String::new();
 
-        std::io::stdout().flush();
-        let comm_len = std::io::stdin().read_line(&mut str_buff);
+        std::io::stdout().flush().unwrap();
+        let _comm_len = std::io::stdin().read_line(&mut str_buff);
         let command = str_buff.trim();
 
 

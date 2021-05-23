@@ -1,11 +1,10 @@
 #![allow(dead_code)]
 mod title;
 mod black_jack_tools;
-mod main_menu;
-mod test_menu;
-mod game_menu;
+
 mod player_strategies;
 mod tests;
+mod menus;
 
 
 use std;
@@ -18,7 +17,7 @@ fn main() {
 
 
     let mut curr_menu = "game_menu".to_string();
-    let mut run_command_funct: RunCommand = game_menu::run_command;
+    let mut run_command_funct: RunCommand = menus::game_menu::run_command;
     print!("{} >",curr_menu);
     loop{
         let mut str_buff = String::new();
@@ -38,11 +37,11 @@ fn main() {
                         run_command_funct = match menu_name {
                             "main_menu" => {
                                 curr_menu = menu_name.to_string();
-                                main_menu::run_command
+                                menus::main_menu::run_command
                             },
                             "game_menu" => {
                                 curr_menu = menu_name.to_string();
-                                game_menu::run_command
+                                menus::game_menu::run_command
                             },
 
                             _ => {

@@ -1,4 +1,5 @@
 use crate::black_jack_tools::{build_deck, draw_card, calc_hand, Player, PlayerDifficulty, get_hand_str, get_card_str};
+use crate::black_jack_tools::{Card};
 
 use std::thread::{sleep};
 use std::time::Duration;
@@ -53,6 +54,7 @@ pub fn play_game() {
 
 }
 
+
 pub fn deal(deck:&mut Vec<u8>, players: &mut Vec<Player>) {
     for _deal_count in 0..2 {
         for player in players.iter_mut() {
@@ -78,9 +80,20 @@ pub fn deal(deck:&mut Vec<u8>, players: &mut Vec<Player>) {
     }
 }
 
+pub fn gather_bets(players: &mut Vec<Player>){
+
+    for player in players{
+        player.gather_bet();
+        for _ in 0..player.hand_count{
+            player.hands.push(Vec::new() );
+        }
+    }
+}
 pub fn play_round(deck:&mut Vec<u8>, players: &mut Vec<Player>){
 
+    gather_bets(players);
     deal(deck,players);
+
     println!("\n====================================================\n");
     for player in players.iter_mut(){
         println!("{:12} ${:8}: ", player.name, player.money);
@@ -88,16 +101,15 @@ pub fn play_round(deck:&mut Vec<u8>, players: &mut Vec<Player>){
 
     }
 
-
     let dealer = &players[players.len() - 1];
     let dealer_count = calc_hand(&dealer.hands[0]);
 
     for mut player in players{
         for hand in &mut player.hands{
-            let mut winnings = -player.bet;
+            let mut winnings:i128 = 0 - player.bet;
             let mut win_str = "Lose";
             let player_count = calc_hand(&hand);
-            if player_count > dealer_count || dealer_count > 21{
+            if (player_count > dealer_count || dealer_count > 21) && player_count <= 21{
                 if player_count == 21 && hand.len() == 2{
                     // FORCE BET TO BE MULTIPLE OF 10
                     winnings = player.bet + (player.bet / 2);
@@ -113,14 +125,13 @@ pub fn play_round(deck:&mut Vec<u8>, players: &mut Vec<Player>){
                 winnings = 0;
                 win_str = "Push";
             }
-            println!("{} {}: {}",player.name, win_str, winnings);
+            println!("{} {} vs {} {}: {}",player.name,player_count,dealer_count, win_str, winnings);
             sleep(Duration::new(1,0));
             player.money += winnings;
 
 
         }
         player.hands.clear();
-        player.hands.push(Vec::new());// REMOVE THIS AFTER ADDING SIZEABLE BETS
     }
 
 

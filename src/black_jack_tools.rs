@@ -2,7 +2,7 @@
 use std::fmt;
 use rand::thread_rng;
 use rand::seq::SliceRandom;
-use crate::player_strategies::{get_player_strat};
+use crate::player_strategies::{get_player_strat, get_betting_strat};
 
 //0  - 12 Heart
 //13 - 25 Diamond
@@ -44,9 +44,10 @@ pub enum PlayerDifficulty{
 pub struct Player {
     pub name: String,
     pub difficulty: PlayerDifficulty,
+    pub hand_count: u16,
     pub hands: Vec<Vec<Card>>,
-    pub money: i64,
-    pub bet: i64
+    pub money: i128,
+    pub bet: i128
 }
 
 impl Player{
@@ -57,8 +58,9 @@ impl Player{
                 PlayerDifficulty::Dealer => format!("{}-{}","Dealer",name),
                 _ => name
             },
-            difficulty: difficulty,
-            hands: vec![Vec::new()],
+            difficulty,
+            hand_count: 1,
+            hands: Vec::new(),
             money: 500,
             bet: 20,
 
@@ -68,7 +70,10 @@ impl Player{
     pub fn play_round(&mut self,deck:&mut Vec<u8>){
         let strat_funct = get_player_strat(&self.difficulty);
         return strat_funct(self,deck,true);
-
+    }
+    pub fn gather_bet(&mut self){
+        let bet_strat_funct = get_betting_strat(&self.difficulty);
+        return bet_strat_funct(self);
     }
 }
 

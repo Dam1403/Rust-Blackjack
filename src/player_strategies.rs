@@ -6,7 +6,7 @@ use std::time::Duration;
 
 
 pub type PlayerStrategy = fn(player: &mut Player, deck: &mut Vec<u8>, live: bool);
-
+pub type BettingStrategy = fn(player: &mut Player);
 
 
 pub fn get_player_strat(difficulty: &PlayerDifficulty) -> PlayerStrategy {
@@ -21,11 +21,58 @@ pub fn get_player_strat(difficulty: &PlayerDifficulty) -> PlayerStrategy {
         PlayerDifficulty::Elliot => player_strat,
         PlayerDifficulty::Cultist => player_strat,
     }
-
-
-
 }
 
+pub fn get_betting_strat(difficulty: &PlayerDifficulty) -> BettingStrategy{
+    return match difficulty {
+        PlayerDifficulty::Player => player_bet,
+        PlayerDifficulty::Dealer => dealer_bet,
+        PlayerDifficulty::Normal => player_bet,
+        PlayerDifficulty::Perfect => player_bet,
+        PlayerDifficulty::Micky => player_bet,
+        PlayerDifficulty::Elliot => player_bet,
+        PlayerDifficulty::Cultist => player_bet,
+    }
+}
+
+
+pub fn dealer_bet(_player: &mut Player){}
+
+pub fn player_bet(player: &mut Player){
+    loop {
+        println!("{:12} ${:8}: ", player.name, player.money);
+        print!("Place bet : ");
+        std::io::stdout().flush().unwrap();
+        let mut str_buff = String::new();
+        let _comm_len = std::io::stdin().read_line(&mut str_buff);
+        let bet:i128 = str_buff.trim().parse().unwrap_or(0);
+        if bet == 0 {
+            println!("Bet invalid {} ",str_buff);
+            println!("Bet rules: > 0, % 10 == 0, integer");
+            continue
+        }
+        if bet % 10 != 0{
+            println!("Bet is not a multiple of 10");
+            continue
+        }
+
+        print!("How many hands?: ");
+        std::io::stdout().flush().unwrap();
+        str_buff.clear();
+        let _comm_len = std::io::stdin().read_line(&mut str_buff);
+        let hand_count:u16 = str_buff.trim().parse().unwrap_or(0);
+
+        if hand_count == 0 {
+            println!("Hand count invalid {}",str_buff);
+            continue
+        }
+
+        player.bet = bet;
+        player.hand_count = hand_count;
+        break
+
+    }
+}
 
 
 pub fn player_strat(player: &mut Player, deck: &mut Vec<u8>,_live: bool){
@@ -35,9 +82,10 @@ pub fn player_strat(player: &mut Player, deck: &mut Vec<u8>,_live: bool){
 
 
     let mut curr_index = 0;
-    while  curr_index < player.hands.len(){
+    let num_hands = player.hands.len();
+    while  curr_index < num_hands{
         let hand = &mut player.hands[curr_index];
-        println!("Hand #{}:",curr_index + 1);
+        println!("Hand #{} of {}:",curr_index + 1, num_hands);
         loop{
             let hand_calc = calc_hand(hand);
             println!("{} - {}",hand_calc,get_hand_str(hand));

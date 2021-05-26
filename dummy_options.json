@@ -1,0 +1,18 @@
+{
+
+  "player": {
+    "name": "Doug",
+    "difficulty": "Player",
+    "money": 500,
+
+  },
+  "game_players": [
+    {
+      "name": "some_guy",
+      "difficulty": "Cultist",
+      "money": 300
+    }
+  ]
+
+
+}

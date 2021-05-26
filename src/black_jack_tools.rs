@@ -2,7 +2,10 @@
 use std::fmt;
 use rand::thread_rng;
 use rand::seq::SliceRandom;
+use std::str::FromStr;
+
 use crate::player_strategies::{get_player_strat, get_betting_strat};
+use std::string::ParseError;
 
 //0  - 12 Heart
 //13 - 25 Diamond
@@ -30,6 +33,22 @@ pub struct Card {
     pub suit: Suit,
     pub face: Face,
     pub value: u8
+}
+
+impl FromStr for PlayerDifficulty {
+    type Err = ParseError;
+    fn from_str(s:&str) -> Result<Self,Self::Err>{
+        match s {
+            "Player" => Ok(PlayerDifficulty::Player),
+            "Dealer" => Ok(PlayerDifficulty::Dealer),
+            "Normal" => Ok(PlayerDifficulty::Normal),
+            "Perfect"=> Ok(PlayerDifficulty::Perfect),
+            "Micky" =>  Ok(PlayerDifficulty::Micky),
+            "Elliot" => Ok(PlayerDifficulty::Elliot),
+            "Cultist"=> Ok(PlayerDifficulty::Cultist),
+            _ => Self::Err(())
+        }
+    }
 }
 pub enum PlayerDifficulty{
     Player,
@@ -238,4 +257,8 @@ pub fn build_deck(decks: u8,shuffled: bool ) -> Vec<u8>{
     deck
 
 }
+
+
+
+
 

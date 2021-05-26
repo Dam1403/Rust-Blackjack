@@ -5,6 +5,7 @@ mod black_jack_tools;
 mod player_strategies;
 mod tests;
 mod menus;
+mod options_tools;
 
 
 use std;

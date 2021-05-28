@@ -38,7 +38,7 @@ pub struct Card {
 impl FromStr for PlayerDifficulty {
     type Err = ParseError;
     fn from_str(s:&str) -> Result<Self,Self::Err>{
-        match s {
+        let result = match s {
             "Player" => Ok(PlayerDifficulty::Player),
             "Dealer" => Ok(PlayerDifficulty::Dealer),
             "Normal" => Ok(PlayerDifficulty::Normal),
@@ -46,8 +46,8 @@ impl FromStr for PlayerDifficulty {
             "Micky" =>  Ok(PlayerDifficulty::Micky),
             "Elliot" => Ok(PlayerDifficulty::Elliot),
             "Cultist"=> Ok(PlayerDifficulty::Cultist),
-            _ => Self::Err(())
-        }
+            _ => Err(Self::Err)
+        };
     }
 }
 pub enum PlayerDifficulty{

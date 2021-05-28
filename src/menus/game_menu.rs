@@ -1,6 +1,6 @@
 use crate::black_jack_tools::{build_deck, draw_card, calc_hand, Player, PlayerDifficulty, get_hand_str, get_card_str};
 use crate::black_jack_tools::{Card};
-
+use crate::options_tools::Options;
 use std::thread::{sleep};
 use std::time::Duration;
 
@@ -11,12 +11,13 @@ pub fn get_name() -> &'static str{
     return "game-menu"
 }
 
-pub fn run_command(command_string: &str) -> Result<(), String>{
+pub fn run_command(command_string: &str, options: &mut Options) -> Result<(), String>{
+
     let args: Vec<&str> = command_string.split_whitespace().collect();
     println!("COMMAND: {}",command_string);
 
     match args[0]{
-        "play" => Ok(play_game()),
+        "play" => Ok(play_game(options)),
         _ => Err(format!("Function {} Not Found", args[0]))
     }
 }
@@ -35,21 +36,20 @@ pub fn help() -> String{
     return help_str
 }
 
-pub fn play_game() {
-    let mut deck = build_deck(2,true);
+pub fn play_game(options: &mut Options) {
+    let mut deck = build_deck(options.decks,true);
 
-    let player = Player::new(String::from("Doug"), PlayerDifficulty::Player);
+
 
     // get random dealer name from http api
-    let dealer = Player::new(String::from("Jimmy"), PlayerDifficulty::Dealer);
+    let player = options.main_player.clone();
+    let dealer = Player::new(String::from("Jimmy"), PlayerDifficulty::Dealer, 0);
 
-
-    let mut players = Vec::new();
-    players.push(player);
-    players.push(dealer);
+    options.other_players.push(player);
+    options.other_players.push(dealer);
 
     loop{
-        play_round(&mut deck, &mut players)
+        play_round(&mut deck, &mut options.other_players)
     }
 
 }

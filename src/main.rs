@@ -10,15 +10,16 @@ mod options_tools;
 
 use std;
 use std::io::Write;
-
+use crate::options_tools::{Options,get_options};
 
 fn main() {
-    type RunCommand = fn(command_string: &str) -> Result<(), String>;
+    type RunCommand = fn(command_string: &str, options: &mut Options) -> Result<(), String>;
     println!("{}",title::TITLE);
 
 
-    let mut curr_menu = "game_menu".to_string();
-    let mut run_command_funct: RunCommand = menus::game_menu::run_command;
+    let mut curr_menu = "options_menu".to_string();
+    let mut run_command_funct: RunCommand = menus::options_menu::run_command;
+    let options = &mut get_options();
     print!("{} >",curr_menu);
     loop{
         let mut str_buff = String::new();
@@ -44,6 +45,10 @@ fn main() {
                                 curr_menu = menu_name.to_string();
                                 menus::game_menu::run_command
                             },
+                            "options_menu" => {
+                                curr_menu = menu_name.to_string();
+                                menus::options_menu::run_command
+                            },
 
                             _ => {
                                 println!("Menu {} not found",menu_name);
@@ -57,7 +62,7 @@ fn main() {
                 }
             }
             Some(_)=> {
-                match run_command_funct(command){
+                match run_command_funct(command,options){
                     Ok(_) => (),
                     Err(err_str) => println!("{}",err_str)
                 }

@@ -1,5 +1,5 @@
 
-
+ use crate::options_tools::Options;
 // MAKE AN ENUM TO SWITCH BETWEEN THIS
 // ADD THIS TO IT's OWN CRATE.
 
@@ -7,7 +7,7 @@ pub fn get_name() -> &'static str{
     return "main-menu"
 }
 
-pub fn run_command(command_string: &str) -> Result<(), String>{
+pub fn run_command(command_string: &str, options: &mut Options) -> Result<(), String>{
     let args: Vec<&str> = command_string.split_whitespace().collect();
     println!("COMMAND: {}",command_string);
     match args[0]{

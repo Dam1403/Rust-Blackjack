@@ -9,15 +9,15 @@ use std::str::FromStr;
 
 
 pub struct Options{
-    decks: u8,
-    main_player: Player,
-    other_players: Vec<Player>
+    pub decks: u8,
+    pub main_player: Player,
+    pub other_players: Vec<Player>
 
 }
 
 
 
-pub fn options_path() -> &str {
+pub fn options_path() -> &'static str {
     return "options.json"
 }
 

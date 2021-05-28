@@ -14,10 +14,7 @@ pub fn run_command(command_string: &str) -> Result<(), String>{
     }
 }
 
-pub fn set_val<T>(key_name:&str, value: T){
 
-
-}
 pub fn load() -> Result<(),String>{
     println!("LOADING OPTIONS_MENU");
 

@@ -63,14 +63,15 @@ pub enum PlayerDifficulty{
 pub struct Player {
     pub name: String,
     pub difficulty: PlayerDifficulty,
+    pub money: i128,
+    //dynamic
     pub hand_count: u16,
     pub hands: Vec<Vec<Card>>,
-    pub money: i128,
     pub bet: i128
 }
 
 impl Player{
-    pub fn new(name:String, difficulty:PlayerDifficulty) -> Self{
+    pub fn new(name:String, difficulty:PlayerDifficulty,money:i128) -> Self{
 
         Self {
             name: match difficulty {
@@ -80,7 +81,7 @@ impl Player{
             difficulty,
             hand_count: 1,
             hands: Vec::new(),
-            money: 500,
+            money: money,
             bet: 20,
 
         }
